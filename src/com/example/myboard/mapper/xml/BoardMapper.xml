@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.myboard.mapper.BoardMapper">
+	<resultMap id="result" type="Board">
+		<result property="idx" column="idx" />
+		<result property="title" column="title" />
+		<result property="contents" column="contents" />
+		<result property="view_cnt" column="view_cnt" />
+		<result property="reg_date" column="reg_date" />
+	</resultMap>
+	<!-- SQL 작성 -->
+	<select id="findAll" resultMap="result">
+		SELECT * FROM tbl_board
+		ORDER BY reg_date DESC
+	</select>
+	<select id="findAllWithCondition" parameterType="map" resultMap="result">
+		SELECT * FROM tbl_board
+		WHERE ${condition} LIKE '%${keyword}%%'
+		ORDER BY reg_date DESC 
+	</select>
+	<select id="findOneByIdx" parameterType="int" resultType="Board">
+		SELECT * FROM tbl_board
+		WHERE idx=#{idx}
+	</select>
+	<update id="updateViewCount" parameterType="int">
+		UPDATE tbl_board
+		SET view_cnt = view_cnt + 1
+		WHERE idx=#{idx}
+	</update>
+	<insert id="addBoard" parameterType="map">
+		INSERT INTO tbl_board
+		VALUES (idx_cnt.NEXTVAL, #{title}, #{contents}, 0, SYSDATE)
+	</insert>
+	<update id="modifyBoard" parameterType="map">
+		UPDATE tbl_board
+		SET title=#{title}, contents=#{contents}
+		WHERE idx=#{idx}
+	</update>
+	<delete id="removeBoard" parameterType="int">
+		DELETE FROM tbl_board
+		WHERE idx=#{idx}
+	</delete>	
+	<delete id="removeAll">
+		DELETE FROM tbl_board
+	</delete>	
+</mapper>
